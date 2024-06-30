@@ -9,14 +9,13 @@ import {
 
 import * as Contacts from "expo-contacts";
 import React from "react";
-import ListItemView from "@/components/common/List/ListItemView";
+import ListItemView from "@/components/common/ContactListItemView/ContactListItemView";
 import Background from "@/components/common/Background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "@/components/common/BackButton";
 import { router } from "expo-router";
 import {
   Box,
-  FAB,
   HStack,
   Icon,
   IconButton,
@@ -32,6 +31,7 @@ import BottomSheet, {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { FAB } from "react-native-paper";
 [
   "177C371E-701D-42F8-A03B-C61CA31627F6",
   "AB211C5F-9EC9-429F-9466-B9382FF61035",
@@ -40,7 +40,7 @@ import BottomSheet, {
   "2E73EE73-C03F-4D5F-B1E8-44E85A70F170",
   "E94CD15C-7964-4A9B-8AC4-10D7CFB791FD",
 ];
-const myLedgerData = [
+const myLedgerData: any[] = [
   {
     id: uuidv4(),
     contactId: "177C371E-701D-42F8-A03B-C61CA31627F6",
@@ -75,6 +75,9 @@ export default function DashboardScreen() {
   const [contacts, setContacts] = React.useState<Contacts.Contact[] | null>(
     null
   );
+  const [dumpData, setDumpData] = React.useState<Contacts.Contact[] | null>(
+    null
+  );
   const filterData = [
     { label: "None", value: null },
     { label: "Owe Me", value: "oweMe" },
@@ -86,18 +89,14 @@ export default function DashboardScreen() {
   const [filterCriteria, setFilterCriteria] = React.useState("");
 
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
-
-  // variables
   const snapPoints = React.useMemo(() => ["1", "25%"], []);
-
-  // callbacks
   const handlePresentModalPress = React.useCallback(() => {
     bottomSheetIndex <= 0
       ? bottomSheetModalRef.current?.expand()
       : bottomSheetModalRef.current?.close();
   }, [bottomSheetIndex]);
   const handleSheetChanges = React.useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
+    // console.log("handleSheetChanges", index);
     setBottomSheetIndex(index);
   }, []);
 
@@ -131,15 +130,34 @@ export default function DashboardScreen() {
           setMeOwe(meOwe);
           setOthersOweMe(oweMe);
           setContacts(arr3);
+          setDumpData(arr3);
         }
       }
     })();
   }, []);
 
+  React.useEffect(() => {
+    let d: any = [];
+    if (filterCriteria === "oweMe") {
+      d = dumpData?.filter((item: any) => {
+        return item.amountOwe < 0;
+      });
+    } else if (filterCriteria === "iOwe") {
+      d = dumpData?.filter((item: any) => {
+        return item.amountOwe > 0;
+      });
+    } else {
+      d = dumpData;
+    }
+    setContacts(d);
+  }, [filterCriteria]);
+
   const renderItem = React.useCallback(
     ({ item }: any) => (
       <View style={styles.itemContainer}>
-        <Text onPress={() => handleFilter(item)}>{item.label}</Text>
+        <Text onPress={() => handleFilter(item)} style={{ color: "#0F67B1" }}>
+          {item.label}
+        </Text>
       </View>
     ),
     []
@@ -209,8 +227,15 @@ export default function DashboardScreen() {
             </HStack>
           </Box>
           <ListItemView data={contacts} />
+          <FAB
+            icon="plus"
+            style={styles.fab}
+            onPress={() => console.log("Pressed")}
+            color={"white"}
+          />
         </SafeAreaView>
       </Background>
+
       <BottomSheet
         ref={bottomSheetModalRef}
         onChange={handleSheetChanges}
@@ -233,10 +258,7 @@ export default function DashboardScreen() {
             ...styles.contentContainer,
           }}
         >
-          <Text
-            variant="button"
-            style={{ alignSelf: "center", color: "#0F67B1" }}
-          >
+          <Text variant="button" style={{ alignSelf: "center" }}>
             Set Filter
           </Text>
           <BottomSheetFlatList
@@ -271,4 +293,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   flatListContentContainer: {},
+  fab: {
+    position: "absolute",
+    marginBottom: 16,
+    right: -20,
+    bottom: -5,
+    backgroundColor: "tomato",
+  },
 });
