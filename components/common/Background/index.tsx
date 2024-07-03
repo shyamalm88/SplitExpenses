@@ -8,10 +8,20 @@ import {
 
 type Props = {
   backgroundColor?: string;
+  backgroundImage?: string;
+  mode?: "cover" | "contain" | "center" | "repeat" | "stretch";
   children: React.ReactNode;
 };
 
-const Background = ({ backgroundColor, children }: Props) => {
+const Background = ({
+  children,
+  backgroundColor,
+  backgroundImage,
+  mode,
+}: Props) => {
+  const image = {
+    uri: backgroundImage,
+  };
   return (
     <View
       style={{
@@ -20,8 +30,8 @@ const Background = ({ backgroundColor, children }: Props) => {
       }}
     >
       <ImageBackground
-        source={require("@/assets/images/background_dot.png")}
-        resizeMode="repeat"
+        source={image ? image : require("@/assets/images/background_dot.png")}
+        resizeMode={mode ? mode : "repeat"}
         style={styles.background}
       >
         <KeyboardAvoidingView style={styles.container} behavior="padding">

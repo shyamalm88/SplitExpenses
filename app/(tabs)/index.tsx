@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   ImageBackground,
   View,
+  Pressable,
 } from "react-native";
 
 import * as Contacts from "expo-contacts";
@@ -13,12 +14,14 @@ import ListItemView from "@/components/common/ContactListItemView/ContactListIte
 import Background from "@/components/common/Background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "@/components/common/BackButton";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import {
   Box,
+  Flex,
   HStack,
   Icon,
   IconButton,
+  Spacer,
   Stack,
   Text,
   TextInput,
@@ -28,10 +31,18 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import BottomSheet, {
   BottomSheetFlatList,
+  BottomSheetFooter,
   BottomSheetModal,
   BottomSheetView,
+  TouchableHighlight,
 } from "@gorhom/bottom-sheet";
 import { FAB } from "react-native-paper";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { theme } from "@/core/theme";
+import { ContactContext } from "../Context/LedgerContactContext";
+import { Collapsible } from "@/components/Collapsible";
+import { Ionicons } from "@expo/vector-icons";
+import Button from "@/components/common/Button";
 [
   "177C371E-701D-42F8-A03B-C61CA31627F6",
   "AB211C5F-9EC9-429F-9466-B9382FF61035",
@@ -69,12 +80,25 @@ const myLedgerData: any[] = [
     currencySymbol: "INR",
     settled: null,
   },
+  {
+    id: uuidv4(),
+    contactId: "E94CD15C-7964-4A9B-8AC4-10D7CFB791FD",
+    amountOwe: -400,
+    currencySymbol: "INR",
+    settled: true,
+  },
 ];
 
 export default function DashboardScreen() {
+  const { setLedgerData } = React.useContext(ContactContext);
+
   const [contacts, setContacts] = React.useState<Contacts.Contact[] | null>(
     null
   );
+  const [isOpen, setOpen] = React.useState<boolean | null>(null);
+  const [settledContacts, setSettledContacts] = React.useState<
+    Contacts.Contact[] | null
+  >(null);
   const [dumpData, setDumpData] = React.useState<Contacts.Contact[] | null>(
     null
   );
@@ -89,19 +113,22 @@ export default function DashboardScreen() {
   const [filterCriteria, setFilterCriteria] = React.useState("");
 
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
-  const snapPoints = React.useMemo(() => ["1", "25%"], []);
+  const snapPoints = React.useMemo(() => ["1%", "35%"], []);
   const handlePresentModalPress = React.useCallback(() => {
     bottomSheetIndex <= 0
       ? bottomSheetModalRef.current?.expand()
       : bottomSheetModalRef.current?.close();
   }, [bottomSheetIndex]);
   const handleSheetChanges = React.useCallback((index: number) => {
-    // console.log("handleSheetChanges", index);
     setBottomSheetIndex(index);
   }, []);
 
   const handleFilter = (item: any) => {
     setFilterCriteria(item.value);
+    bottomSheetModalRef.current?.close();
+  };
+
+  const handleBottomSheetClose = () => {
     bottomSheetModalRef.current?.close();
   };
 
@@ -118,18 +145,25 @@ export default function DashboardScreen() {
         });
 
         if (data.length > 0) {
-          let arr3 = myLedgerData.map((item, i) =>
-            Object.assign({}, item, data[i])
-          );
+          let arr3 = myLedgerData
+            .filter((item) => !item.settled)
+            .map((item, i) => Object.assign({}, item, data[i]));
+          let settled = myLedgerData
+            .filter((item) => item.settled)
+            .map((item, i) => Object.assign({}, item, data[i]));
+
           const meOwe = arr3
-            .filter((item) => item.amountOwe < 0)
+            .filter((item) => item.amountOwe < 0 && !item.settled)
             .reduce((acc, curr) => Math.abs(curr.amountOwe - acc), 0);
           const oweMe = arr3
-            .filter((item) => item.amountOwe >= 0)
+            .filter((item) => item.amountOwe >= 0 && !item.settled)
             .reduce((acc, curr) => Math.abs(curr.amountOwe + acc), 0);
+
           setMeOwe(meOwe);
           setOthersOweMe(oweMe);
           setContacts(arr3);
+          setSettledContacts(settled);
+          setLedgerData(arr3);
           setDumpData(arr3);
         }
       }
@@ -150,12 +184,16 @@ export default function DashboardScreen() {
       d = dumpData;
     }
     setContacts(d);
+    setLedgerData(d);
   }, [filterCriteria]);
 
   const renderItem = React.useCallback(
     ({ item }: any) => (
       <View style={styles.itemContainer}>
-        <Text onPress={() => handleFilter(item)} style={{ color: "#0F67B1" }}>
+        <Text
+          onPress={() => handleFilter(item)}
+          style={{ color: theme.colors.primary }}
+        >
           {item.label}
         </Text>
       </View>
@@ -166,67 +204,168 @@ export default function DashboardScreen() {
   return (
     <>
       <Background>
-        <SafeAreaView style={{ flex: 1 }}>
-          <Box style={{ height: 60 }}>
-            <VStack>
-              <HStack justify="between" items="center">
-                <View>
-                  <BackButton
-                    absolute={false}
-                    goBack={() => router.navigate("/(tabs)/")}
+        <SafeAreaView style={{ height: "auto", flex: 1 }}>
+          <View
+            style={[
+              {
+                flexDirection: "column",
+                flex: 1,
+              },
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <Box style={{ height: 60 }}>
+                <VStack>
+                  <HStack justify="between" items="center">
+                    <View>
+                      <BackButton
+                        absolute={false}
+                        goBack={() => router.navigate("/(tabs)/")}
+                      />
+                    </View>
+                    <View></View>
+                    <View>
+                      <HStack>
+                        <IconButton
+                          icon={(props) => <Icon name="magnify" {...props} />}
+                        />
+                        <IconButton
+                          icon={(props) => (
+                            <Icon name="dots-vertical" {...props} />
+                          )}
+                        />
+                      </HStack>
+                    </View>
+                  </HStack>
+                </VStack>
+              </Box>
+              <Box style={{ height: 60 }}>
+                <HStack justify="between" items="center">
+                  {(!filterCriteria || filterCriteria === "oweMe") && (
+                    <VStack spacing={5}>
+                      <HStack justify="start" spacing={10}>
+                        <Text variant="subtitle1">Overall, You Owe</Text>
+                        <Text
+                          variant="subtitle1"
+                          color="#FF5722"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          ₹ {meOwe}
+                        </Text>
+                      </HStack>
+                    </VStack>
+                  )}
+                  {filterCriteria === "iOwe" && (
+                    <VStack spacing={5}>
+                      <HStack justify="start" spacing={10}>
+                        <Text variant="subtitle1">Overall, Others Owe You</Text>
+                        <Text
+                          variant="subtitle1"
+                          color="#299764"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          ₹ {othersOweMe}
+                        </Text>
+                      </HStack>
+                    </VStack>
+                  )}
+                  <IconButton
+                    onPress={handlePresentModalPress}
+                    color={
+                      filterCriteria === "iOwe" && contacts?.length
+                        ? "#299764"
+                        : "#FF5722"
+                    }
+                    icon={(props) => <Icon name="tune" {...props} />}
                   />
-                </View>
-                <View></View>
-                <View>
-                  <HStack>
-                    <IconButton
-                      icon={(props) => <Icon name="magnify" {...props} />}
-                    />
-                    <IconButton
-                      icon={(props) => <Icon name="dots-vertical" {...props} />}
-                    />
-                  </HStack>
-                </View>
-              </HStack>
-            </VStack>
-          </Box>
-          <Box style={{ height: 60 }}>
-            <HStack justify="between" items="center">
-              {(!filterCriteria || filterCriteria === "oweMe") && (
-                <VStack spacing={5}>
-                  <HStack justify="start" spacing={10}>
-                    <Text variant="subtitle1">Overall, You Owe</Text>
+                </HStack>
+              </Box>
+              <Box style={{ height: 20 }}>
+                {contacts?.length && (
+                  <Link
+                    href="/(individualPages)/allLedgerContactList"
+                    push
+                    style={{
+                      alignSelf: "flex-end",
+                      color: theme.colors.primary,
+                    }}
+                  >
+                    <Text>View All</Text>
+                    <Icon name="arrow-right" />
+                  </Link>
+                )}
+              </Box>
+              <View>
+                <ListItemView data={contacts} limit={5} />
+              </View>
+              <View style={{ marginTop: 10 }}>
+                {isOpen && (
+                  <View style={{ marginBottom: 20 }}>
+                    <VStack spacing={10}>
+                      <HStack spacing={4} justify="center">
+                        <Text
+                          style={{
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            color: theme.colors.secondary,
+                          }}
+                          onPress={() => setOpen(false)}
+                        >
+                          Previously settled up friends
+                        </Text>
+                        <Icon
+                          name={"chevron-up"}
+                          color={theme.colors.primary}
+                          size={20}
+                        />
+                        <Text
+                          style={{
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            color: theme.colors.primary,
+                          }}
+                          onPress={() => setOpen(false)}
+                        >
+                          Re-Hide
+                        </Text>
+                      </HStack>
+                      <ListItemView data={settledContacts} />
+                    </VStack>
+                  </View>
+                )}
+                {!isOpen && (
+                  <VStack spacing={2}>
                     <Text
-                      variant="subtitle1"
-                      color="red"
-                      style={{ fontWeight: "bold" }}
+                      style={{
+                        justifyContent: "center",
+                        alignSelf: "center",
+                        color: theme.colors.secondary,
+                      }}
                     >
-                      ₹ {meOwe}
+                      Hiding Already Settled Up Friends
                     </Text>
-                  </HStack>
-                </VStack>
-              )}
-              {filterCriteria === "iOwe" && (
-                <VStack spacing={5}>
-                  <HStack justify="start" spacing={10}>
-                    <Text variant="subtitle1">Overall, Others Owe You</Text>
-                    <Text
-                      variant="subtitle1"
-                      color="green"
-                      style={{ fontWeight: "bold" }}
-                    >
-                      ₹ {othersOweMe}
-                    </Text>
-                  </HStack>
-                </VStack>
-              )}
-              <IconButton
-                onPress={handlePresentModalPress}
-                icon={(props) => <Icon name="tune" {...props} />}
-              />
-            </HStack>
-          </Box>
-          <ListItemView data={contacts} />
+                    <Button mode="contained" onPress={() => setOpen(true)}>
+                      <HStack
+                        spacing={6}
+                        items="center"
+                        justify="center"
+                        content="center"
+                        self="center"
+                      >
+                        <Icon name={"chevron-down"} color="white" size={24} />
+                        <Text
+                          variant="body2"
+                          style={{ fontSize: 18, color: "white" }}
+                        >
+                          See All Recently Settled Contacts
+                        </Text>
+                      </HStack>
+                    </Button>
+                  </VStack>
+                )}
+              </View>
+            </View>
+          </View>
           <FAB
             icon="plus"
             style={styles.fab}
@@ -241,6 +380,7 @@ export default function DashboardScreen() {
         onChange={handleSheetChanges}
         snapPoints={snapPoints}
         enablePanDownToClose
+        index={-1}
         backgroundStyle={{
           borderWidth: 1,
           borderColor: "#7D8ABC",
@@ -252,13 +392,25 @@ export default function DashboardScreen() {
           shadowOpacity: 0.5,
           shadowRadius: 15,
         }}
+        footerComponent={(props) => (
+          <BottomSheetFooter {...props} bottomInset={0}>
+            <TouchableOpacity onPress={handleBottomSheetClose}>
+              <View style={styles.footerContainer}>
+                <Text style={styles.footerText}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheetFooter>
+        )}
       >
         <BottomSheetView
           style={{
             ...styles.contentContainer,
           }}
         >
-          <Text variant="button" style={{ alignSelf: "center" }}>
+          <Text
+            variant="button"
+            style={{ alignSelf: "center", marginBottom: 10 }}
+          >
             Set Filter
           </Text>
           <BottomSheetFlatList
@@ -284,13 +436,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   itemContainer: {
-    padding: 6,
-    margin: 6,
     flexDirection: "column",
-    // backgroundColor: "#f7f7f7",
     justifyContent: "center",
     alignContent: "center",
     alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#d7d7d7",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   flatListContentContainer: {},
   fab: {
@@ -299,5 +454,18 @@ const styles = StyleSheet.create({
     right: -20,
     bottom: -5,
     backgroundColor: "tomato",
+    borderRadius: 50,
+  },
+  footerContainer: {
+    padding: 12,
+    margin: 12,
+    borderRadius: 12,
+    backgroundColor: theme.colors.primary,
+    borderWidth: 1,
+  },
+  footerText: {
+    textAlign: "center",
+    color: "#fff",
+    fontWeight: "600",
   },
 });

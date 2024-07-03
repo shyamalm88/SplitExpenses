@@ -11,7 +11,7 @@ const BackButton = ({ goBack, absolute = true }: Props) => (
   <TouchableOpacity onPress={goBack} style={absolute ? styles.container : {}}>
     <Image
       style={styles.image}
-      source={require("@/assets/images/arrow_back.png")}
+      source={require("@/assets/images/back_arrow.png")}
     />
   </TouchableOpacity>
 );

@@ -1,5 +1,12 @@
 import React from "react";
-import { Image, ImageBackground, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import {
   GestureHandlerRootView,
   ScrollView,
@@ -14,92 +21,117 @@ import {
   Text,
   VStack,
 } from "@react-native-material/core";
+import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
 
-const ContactListItemView = ({ data }: any) => {
+const ContactListItemView = ({ data, limit }: any) => {
+  const [limitData, setLimitData] = React.useState([]);
+  React.useEffect(() => {
+    if (limit && data) {
+      const d = data?.slice(0, limit);
+      setLimitData(d);
+    } else {
+      setLimitData(data);
+    }
+  }, [data, limit]);
   return (
-    <TouchableWithoutFeedback onPress={() => {}}>
-      {(data == null || data.length === 0) && (
+    <>
+      {(limitData == null || limitData?.length === 0) && (
         <ImageBackground
           source={require("@/assets/images/9170826.jpg")}
           resizeMode="cover"
           style={styles.background}
         />
       )}
-      <Stack fill spacing={4}>
-        {data.length &&
-          data.map((item: any) => {
+      <VStack spacing={4}>
+        {limitData?.length &&
+          limitData.map((item: any) => {
             return (
-              <View style={styles.mainCardView} key={item.id}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View style={styles.subCardView}>
-                    <Avatar size={40} label={item.name} autoColor />
+              <Pressable
+                style={{ height: 80 }}
+                onPress={() =>
+                  router.push("/(individualPages)/individualProfileView")
+                }
+              >
+                <View style={styles.mainCardView} key={item.id}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flex: 1,
+                    }}
+                  >
+                    <View style={styles.subCardView}>
+                      <Avatar size={40} label={item.name} autoColor />
+                    </View>
+                    <View style={{ marginLeft: 12, flex: 1 }}>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: "#333",
+                          fontWeight: "bold",
+                          textTransform: "capitalize",
+                        }}
+                      >
+                        {item.name}
+                      </Text>
+                      <View
+                        style={{
+                          marginTop: 4,
+                          borderWidth: 0,
+                        }}
+                      ></View>
+                    </View>
                   </View>
-                  <View style={{ marginLeft: 12 }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: "#333",
-                        fontWeight: "bold",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {item.name}
-                    </Text>
-                    <View
-                      style={{
-                        marginTop: 4,
-                        borderWidth: 0,
-                      }}
-                    ></View>
+                  <View
+                    style={{
+                      marginLeft: 26,
+                      alignItems: "flex-end",
+                      justifyContent: "center",
+                      flex: 1,
+                    }}
+                  >
+                    <VStack spacing={4} items="end">
+                      <Text
+                        style={{
+                          color:
+                            item.amountOwe < 0
+                              ? "red"
+                              : item.amountOwe === 0
+                              ? "gray"
+                              : "#299764",
+                          fontSize: 12,
+                        }}
+                      >
+                        {item.amountOwe < 0
+                          ? `You owe`
+                          : item.amountOwe === 0
+                          ? `no expenses`
+                          : `Owes you`}
+                      </Text>
+                      <Text
+                        style={{
+                          color:
+                            item.amountOwe < 0
+                              ? "red"
+                              : item.amountOwe === 0
+                              ? "gray"
+                              : "#299764",
+                          fontSize: 16,
+                        }}
+                      >
+                        {Math.abs(item.amountOwe) === 0
+                          ? ""
+                          : "₹" + Math.abs(item.amountOwe)}
+                      </Text>
+                    </VStack>
                   </View>
                 </View>
-                <View
-                  style={{
-                    marginLeft: 26,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <VStack spacing={4} items="end">
-                    <Text
-                      style={{
-                        color:
-                          item.amountOwe < 0
-                            ? "red"
-                            : item.amountOwe === 0
-                            ? "gray"
-                            : "green",
-                        fontSize: 12,
-                      }}
-                    >
-                      {item.amountOwe < 0
-                        ? `You owe`
-                        : item.amountOwe === 0
-                        ? `no expenses`
-                        : `Owes you`}
-                    </Text>
-                    <Text
-                      style={{
-                        color:
-                          item.amountOwe < 0
-                            ? "red"
-                            : item.amountOwe === 0
-                            ? "gray"
-                            : "green",
-                        fontSize: 16,
-                      }}
-                    >
-                      {Math.abs(item.amountOwe) === 0
-                        ? ""
-                        : "₹" + Math.abs(item.amountOwe)}
-                    </Text>
-                  </VStack>
-                </View>
-              </View>
+              </Pressable>
             );
           })}
-      </Stack>
-    </TouchableWithoutFeedback>
+      </VStack>
+    </>
   );
 };
 
@@ -111,7 +143,7 @@ const styles = StyleSheet.create({
 
   mainCardView: {
     height: 70,
-    alignItems: "center",
+    // alignItems: "center",
     backgroundColor: "white",
     borderRadius: 10,
     borderWidth: 1,
@@ -122,6 +154,7 @@ const styles = StyleSheet.create({
     paddingRight: 14,
     marginTop: 6,
     marginBottom: 16,
+    alignContent: "center",
   },
   subCardView: {
     height: 40,
@@ -138,6 +171,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
     flex: 1,
+    flexDirection: "column",
   },
 });
 
