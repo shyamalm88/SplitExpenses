@@ -298,72 +298,74 @@ export default function DashboardScreen() {
               <View>
                 <ListItemView data={contacts} limit={5} />
               </View>
-              <View style={{ marginTop: 10 }}>
-                {isOpen && (
-                  <View style={{ marginBottom: 20 }}>
-                    <VStack spacing={10}>
-                      <HStack spacing={4} justify="center">
-                        <Text
-                          style={{
-                            justifyContent: "center",
-                            alignSelf: "center",
-                            color: theme.colors.secondary,
-                          }}
-                          onPress={() => setOpen(false)}
-                        >
-                          Previously settled up friends
-                        </Text>
-                        <Icon
-                          name={"chevron-up"}
-                          color={theme.colors.primary}
-                          size={20}
-                        />
-                        <Text
-                          style={{
-                            justifyContent: "center",
-                            alignSelf: "center",
-                            color: theme.colors.primary,
-                          }}
-                          onPress={() => setOpen(false)}
-                        >
-                          Re-Hide
-                        </Text>
-                      </HStack>
-                      <ListItemView data={settledContacts} />
-                    </VStack>
-                  </View>
-                )}
-                {!isOpen && (
-                  <VStack spacing={2}>
-                    <Text
-                      style={{
-                        justifyContent: "center",
-                        alignSelf: "center",
-                        color: theme.colors.secondary,
-                      }}
-                    >
-                      Hiding Already Settled Up Friends
-                    </Text>
-                    <Button mode="contained" onPress={() => setOpen(true)}>
-                      <HStack
-                        spacing={6}
-                        items="center"
-                        justify="center"
-                        content="center"
-                        self="center"
+              {contacts && contacts.length && (
+                <View style={{ marginTop: 10 }}>
+                  {isOpen && (
+                    <View style={{ marginBottom: 20 }}>
+                      <VStack spacing={10}>
+                        <HStack spacing={4} justify="center">
+                          <Text
+                            style={{
+                              justifyContent: "center",
+                              alignSelf: "center",
+                              color: theme.colors.secondary,
+                            }}
+                            onPress={() => setOpen(false)}
+                          >
+                            Previously settled up friends
+                          </Text>
+                          <Icon
+                            name={"chevron-up"}
+                            color={theme.colors.primary}
+                            size={20}
+                          />
+                          <Text
+                            style={{
+                              justifyContent: "center",
+                              alignSelf: "center",
+                              color: theme.colors.primary,
+                            }}
+                            onPress={() => setOpen(false)}
+                          >
+                            Re-Hide
+                          </Text>
+                        </HStack>
+                        <ListItemView data={settledContacts} />
+                      </VStack>
+                    </View>
+                  )}
+                  {!isOpen && (
+                    <VStack spacing={2}>
+                      <Text
+                        style={{
+                          justifyContent: "center",
+                          alignSelf: "center",
+                          color: theme.colors.secondary,
+                        }}
                       >
-                        <Icon name={"chevron-down"} color="white" size={24} />
-                        <Text
-                          variant="body2"
-                          style={{ fontSize: 18, color: "white" }}
+                        Hiding Already Settled Up Friends
+                      </Text>
+                      <Button mode="contained" onPress={() => setOpen(true)}>
+                        <HStack
+                          spacing={6}
+                          items="center"
+                          justify="center"
+                          content="center"
+                          self="center"
                         >
-                          See All Recently Settled Contacts
-                        </Text>
-                      </HStack>
-                    </Button>
-                  </VStack>
-                )}
-              </View>
+                          <Icon name={"chevron-down"} color="white" size={24} />
+                          <Text
+                            variant="body2"
+                            style={{ fontSize: 18, color: "white" }}
+                          >
+                            See All Recently Settled Contacts
+                          </Text>
+                        </HStack>
+                      </Button>
+                    </VStack>
+                  )}
+                </View>
+              )}
             </View>
           </View>
           <FAB
