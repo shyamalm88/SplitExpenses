@@ -1,36 +1,38 @@
 import React, { memo, useState } from "react";
-import { TouchableOpacity, StyleSheet, Text, View } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import Background from "@/components/common/Background";
 import Logo from "@/components/common/Logo";
 import Header from "@/components/common/Header";
-import BackButton from "@/components/common/BackButton";
 import Button from "@/components/common/Button";
 import TextInput from "@/components/common/TextInput";
-
+import BackButton from "@/components/common/BackButton";
 import { theme } from "@/core/theme";
-import { emailValidator, passwordValidator } from "@/core/utils";
 import { Navigation } from "@/core/types";
+import { emailValidator, passwordValidator, nameValidator } from "@/core/utils";
 import { router } from "expo-router";
 
 type Props = {
   navigation: Navigation;
 };
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
+  const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
-  const _onLoginPressed = () => {
+  const _onSignUpPressed = () => {
+    const nameError = nameValidator(name.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
 
-    // if (emailError || passwordError) {
-    //   setEmail({ ...email, error: emailError });
-    //   setPassword({ ...password, error: passwordError });
-    //   return;
-    // }
+    if (emailError || passwordError || nameError) {
+      setName({ ...name, error: nameError });
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
+      return;
+    }
 
-    router.navigate("/(tabs)/");
+    router.navigate("Dashboard");
   };
 
   return (
@@ -39,7 +41,16 @@ const LoginScreen = () => {
 
       <Logo />
 
-      <Header>Welcome back.</Header>
+      <Header>Create Account</Header>
+
+      <TextInput
+        label="Name"
+        returnKeyType="next"
+        value={name.value}
+        onChangeText={(text) => setName({ value: text, error: "" })}
+        error={!!name.error}
+        errorText={name.error}
+      />
 
       <TextInput
         label="Email"
@@ -64,38 +75,30 @@ const LoginScreen = () => {
         secureTextEntry
       />
 
-      <View style={styles.forgotPassword}>
-        <TouchableOpacity onPress={() => router.navigate("/forgotPassword")}>
-          <Text style={styles.label}>Forgot your password?</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Button mode="contained" onPress={_onLoginPressed}>
-        Login
+      <Button mode="contained" onPress={_onSignUpPressed} style={styles.button}>
+        Sign Up
       </Button>
 
       <View style={styles.row}>
-        <Text style={styles.label}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => router.navigate("/register")}>
-          <Text style={styles.link}>Sign up</Text>
-        </TouchableOpacity>
+        <Text style={styles.label}>Already have an account? </Text>
+        <Pressable onPress={() => router.navigate("/login")}>
+          <Text style={styles.link}>Login</Text>
+        </Pressable>
       </View>
     </Background>
   );
 };
 
 const styles = StyleSheet.create({
-  forgotPassword: {
-    width: "100%",
-    alignItems: "flex-end",
-    marginBottom: 24,
+  label: {
+    color: theme.colors.secondary,
+  },
+  button: {
+    marginTop: 24,
   },
   row: {
     flexDirection: "row",
     marginTop: 4,
-  },
-  label: {
-    color: theme.colors.secondary,
   },
   link: {
     fontWeight: "bold",
@@ -103,4 +106,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(LoginScreen);
+export default memo(RegisterScreen);

@@ -22,7 +22,7 @@ import {
 } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { theme } from "@/core/theme";
-const exampleImageUri = Image.resolveAssetSource(image).uri;
+// const exampleImageUri = Image.resolveAssetSource(image).uri;
 
 function IndividualProfileView() {
   return (
@@ -38,7 +38,7 @@ function IndividualProfileView() {
           justifyContent: "center",
         }}
         headerImage={
-          <Background backgroundImage={exampleImageUri} mode="cover">
+          <Background mode="cover">
             <View style={{ flex: 1, justifyContent: "center" }}>
               <BackButton goBack={() => router.back()} />
               <View

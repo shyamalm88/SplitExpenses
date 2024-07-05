@@ -1,12 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-  Platform,
-  PermissionsAndroid,
-  ImageBackground,
-  View,
-  Pressable,
-} from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 
 import * as Contacts from "expo-contacts";
 import React from "react";
@@ -17,80 +9,31 @@ import BackButton from "@/components/common/BackButton";
 import { Link, router } from "expo-router";
 import {
   Box,
-  Flex,
+  Divider,
   HStack,
   Icon,
   IconButton,
-  Spacer,
-  Stack,
   Text,
-  TextInput,
   VStack,
 } from "@react-native-material/core";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetFooter,
   BottomSheetModal,
   BottomSheetView,
-  TouchableHighlight,
 } from "@gorhom/bottom-sheet";
 import { FAB } from "react-native-paper";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { theme } from "@/core/theme";
 import { ContactContext } from "../Context/LedgerContactContext";
-import { Collapsible } from "@/components/Collapsible";
-import { Ionicons } from "@expo/vector-icons";
 import Button from "@/components/common/Button";
-[
-  "177C371E-701D-42F8-A03B-C61CA31627F6",
-  "AB211C5F-9EC9-429F-9466-B9382FF61035",
-  "410FE041-5C4E-48DA-B4DE-04C15EA3DBAC",
-  "F57C8277-585D-4327-88A6-B5689FF69DFE",
-  "2E73EE73-C03F-4D5F-B1E8-44E85A70F170",
-  "E94CD15C-7964-4A9B-8AC4-10D7CFB791FD",
-];
-const myLedgerData: any[] = [
-  {
-    id: uuidv4(),
-    contactId: "177C371E-701D-42F8-A03B-C61CA31627F6",
-    amountOwe: -2039,
-    currencySymbol: "INR",
-    settled: false,
-  },
-  {
-    id: uuidv4(),
-    contactId: "410FE041-5C4E-48DA-B4DE-04C15EA3DBAC",
-    amountOwe: 6198,
-    currencySymbol: "INR",
-    settled: false,
-  },
-  {
-    id: uuidv4(),
-    contactId: "E94CD15C-7964-4A9B-8AC4-10D7CFB791FD",
-    amountOwe: -20,
-    currencySymbol: "INR",
-    settled: false,
-  },
-  {
-    id: uuidv4(),
-    contactId: "2E73EE73-C03F-4D5F-B1E8-44E85A70F170",
-    amountOwe: 0,
-    currencySymbol: "INR",
-    settled: null,
-  },
-  {
-    id: uuidv4(),
-    contactId: "E94CD15C-7964-4A9B-8AC4-10D7CFB791FD",
-    amountOwe: -400,
-    currencySymbol: "INR",
-    settled: true,
-  },
-];
+import axios from "axios";
 
 export default function DashboardScreen() {
-  const { setLedgerData } = React.useContext(ContactContext);
+  const { allContactData, setLedgerData } = React.useContext(ContactContext);
+  const [myLedgerData, setMyLedgerData] = React.useState([]);
+  const [grantedContactData, setGrantedContactData] =
+    React.useState<Contacts.Contact[]>(allContactData);
 
   const [contacts, setContacts] = React.useState<Contacts.Contact[] | null>(
     null
@@ -132,43 +75,57 @@ export default function DashboardScreen() {
     bottomSheetModalRef.current?.close();
   };
 
+  const getData = async (url: string) => {
+    const resp = await axios.get(url);
+    return resp.data;
+  };
+
   React.useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === "granted") {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [
-            Contacts.Fields.Name,
-            Contacts.Fields.Emails,
-            Contacts.Fields.PhoneNumbers,
-          ],
-        });
-
-        if (data.length > 0) {
-          let arr3 = myLedgerData
-            .filter((item) => !item.settled)
-            .map((item, i) => Object.assign({}, item, data[i]));
-          let settled = myLedgerData
-            .filter((item) => item.settled)
-            .map((item, i) => Object.assign({}, item, data[i]));
-
-          const meOwe = arr3
-            .filter((item) => item.amountOwe < 0 && !item.settled)
-            .reduce((acc, curr) => Math.abs(curr.amountOwe - acc), 0);
-          const oweMe = arr3
-            .filter((item) => item.amountOwe >= 0 && !item.settled)
-            .reduce((acc, curr) => Math.abs(curr.amountOwe + acc), 0);
-
-          setMeOwe(meOwe);
-          setOthersOweMe(oweMe);
-          setContacts(arr3);
-          setSettledContacts(settled);
-          setLedgerData(arr3);
-          setDumpData(arr3);
-        }
-      }
-    })();
+    async function getAsyncLedgerData() {
+      const ledgerDataResp = await getData("http://localhost:3000/ledger");
+      setMyLedgerData(ledgerDataResp);
+    }
+    getAsyncLedgerData();
   }, []);
+
+  React.useEffect(() => {
+    // console.log(JSON.stringify(grantedContactData));
+    // console.log(JSON.stringify(myLedgerData));
+
+    if (myLedgerData.length > 0) {
+      let arr3 = myLedgerData
+        .filter(
+          (item: any, i) =>
+            item &&
+            !item?.settled &&
+            grantedContactData.some((itm: any) => itm.id === item.contactId)
+        )
+        .map((item: any) => ({
+          ...item,
+          ...grantedContactData.find((t2) => t2.id === item.contactId),
+        }));
+      let settled = myLedgerData
+        .filter((item: any) => item && item?.settled)
+        .map((item: any) => ({
+          ...item,
+          ...grantedContactData.find((t2) => t2.id === item.contactId),
+        }));
+
+      const meOwe = arr3
+        .filter((item: any) => item && item?.amountOwe < 0 && !item?.settled)
+        .reduce((acc, curr: any) => Math.abs(curr.amountOwe - acc), 0);
+      const oweMe = arr3
+        .filter((item: any) => item && item?.amountOwe >= 0 && !item?.settled)
+        .reduce((acc, curr: any) => Math.abs(curr?.amountOwe + acc), 0);
+
+      setMeOwe(meOwe);
+      setOthersOweMe(oweMe);
+      setContacts(arr3);
+      setSettledContacts(settled);
+      setLedgerData(arr3);
+      setDumpData(arr3);
+    }
+  }, [myLedgerData, grantedContactData]);
 
   React.useEffect(() => {
     let d: any = [];
@@ -300,6 +257,7 @@ export default function DashboardScreen() {
               </View>
               {contacts && contacts.length && (
                 <View style={{ marginTop: 10 }}>
+                  <Divider style={{ marginVertical: 20 }} leadingInset={16} />
                   {isOpen && (
                     <View style={{ marginBottom: 20 }}>
                       <VStack spacing={10}>
@@ -330,7 +288,7 @@ export default function DashboardScreen() {
                             Re-Hide
                           </Text>
                         </HStack>
-                        <ListItemView data={settledContacts} />
+                        <ListItemView data={settledContacts} settled />
                       </VStack>
                     </View>
                   )}
@@ -371,7 +329,7 @@ export default function DashboardScreen() {
           <FAB
             icon="plus"
             style={styles.fab}
-            onPress={() => console.log("Pressed")}
+            onPress={() => router.push("/(individualPages)/addContact")}
             color={"white"}
           />
         </SafeAreaView>
@@ -396,11 +354,11 @@ export default function DashboardScreen() {
         }}
         footerComponent={(props) => (
           <BottomSheetFooter {...props} bottomInset={0}>
-            <TouchableOpacity onPress={handleBottomSheetClose}>
+            <Pressable onPress={handleBottomSheetClose}>
               <View style={styles.footerContainer}>
                 <Text style={styles.footerText}>Close</Text>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </BottomSheetFooter>
         )}
       >

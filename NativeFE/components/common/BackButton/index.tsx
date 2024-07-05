@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { TouchableOpacity, Image, StyleSheet } from "react-native";
+import { Pressable, Image, StyleSheet } from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 
 type Props = {
@@ -8,12 +8,12 @@ type Props = {
 };
 
 const BackButton = ({ goBack, absolute = true }: Props) => (
-  <TouchableOpacity onPress={goBack} style={absolute ? styles.container : {}}>
+  <Pressable onPress={goBack} style={absolute ? styles.container : {}}>
     <Image
       style={styles.image}
       source={require("@/assets/images/back_arrow.png")}
     />
-  </TouchableOpacity>
+  </Pressable>
 );
 
 const styles = StyleSheet.create({

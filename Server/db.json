@@ -1,0 +1,49 @@
+{
+  "ledger": [
+    {
+      "id": 123,
+      "contactId": "177C371E-701D-42F8-A03B-C61CA31627F6",
+      "amountOwe": -2039,
+      "currencySymbol": "INR",
+      "settled": false,
+      "settledDate": "",
+      "number": "(415) 555-3695"
+    },
+    {
+      "id": 124,
+      "contactId": "410FE041-5C4E-48DA-B4DE-04C15EA3DBAC",
+      "amountOwe": 6198,
+      "currencySymbol": "INR",
+      "settled": false,
+      "settledDate": "",
+      "number": "888-555-1212"
+    },
+    {
+      "id": 125,
+      "contactId": "E94CD15C-7964-4A9B-8AC4-10D7CFB791FD",
+      "amountOwe": -20,
+      "currencySymbol": "INR",
+      "settled": false,
+      "settledDate": "",
+      "number": "555-610-6679"
+    },
+    {
+      "id": 127,
+      "contactId": "E94CD15C-7964-4A9B-8AC4-10D7CFB791FD",
+      "amountOwe": -400,
+      "currencySymbol": "INR",
+      "settled": true,
+      "settledDate": "Friday, 5 July 2024",
+      "number": "555-610-6679"
+    },
+    {
+      "id": 1720187569710,
+      "contactId": "D679589D-7B82-4E80-90E9-E1B739523624",
+      "amountOwe": 0,
+      "currencySymbol": "INR",
+      "settled": null,
+      "settledDate": "",
+      "number": "+917044496624"
+    }
+  ]
+}

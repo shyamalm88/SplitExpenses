@@ -1,14 +1,14 @@
 import { Dimensions, Image, View } from "react-native";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import image from "@/assets/images/pbg.jpg";
+// import image from "@/assets/images/pbg.jpg";
 import { HStack, Text, VStack } from "@react-native-material/core";
 import { FAB, List } from "react-native-paper";
 import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
-const exampleImageUri = Image.resolveAssetSource(image).uri;
+// const exampleImageUri = Image.resolveAssetSource(image).uri;
 
 export default function ActivityScreen() {
   return (

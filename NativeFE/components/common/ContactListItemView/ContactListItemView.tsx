@@ -1,30 +1,9 @@
 import React from "react";
-import {
-  Dimensions,
-  Image,
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
-import {
-  GestureHandlerRootView,
-  ScrollView,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
-import {
-  Avatar,
-  Icon,
-  IconButton,
-  ListItem,
-  Stack,
-  Text,
-  VStack,
-} from "@react-native-material/core";
-import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import { ImageBackground, Pressable, StyleSheet, View } from "react-native";
+import { Avatar, Text, VStack } from "@react-native-material/core";
 import { router } from "expo-router";
 
-const ContactListItemView = ({ data, limit }: any) => {
+const ContactListItemView = ({ data, limit, settled }: any) => {
   const [limitData, setLimitData] = React.useState([]);
   React.useEffect(() => {
     if (limit && data) {
@@ -52,8 +31,9 @@ const ContactListItemView = ({ data, limit }: any) => {
                 onPress={() =>
                   router.push("/(individualPages)/individualProfileView")
                 }
+                key={item.id}
               >
-                <View style={styles.mainCardView} key={item.id}>
+                <View style={styles.mainCardView}>
                   <View
                     style={{
                       flexDirection: "row",
@@ -75,12 +55,22 @@ const ContactListItemView = ({ data, limit }: any) => {
                       >
                         {item.name}
                       </Text>
-                      <View
-                        style={{
-                          marginTop: 4,
-                          borderWidth: 0,
-                        }}
-                      ></View>
+                      {settled && (
+                        <View
+                          style={{
+                            marginTop: 4,
+                            borderWidth: 0,
+                          }}
+                        >
+                          <Text
+                            variant="subtitle2"
+                            color="gray"
+                            style={{ fontSize: 10 }}
+                          >
+                            {item.settledDate}
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   </View>
                   <View
@@ -96,26 +86,38 @@ const ContactListItemView = ({ data, limit }: any) => {
                         style={{
                           color:
                             item.amountOwe < 0
-                              ? "red"
+                              ? settled
+                                ? "gray"
+                                : "red"
                               : item.amountOwe === 0
+                              ? "gray"
+                              : settled
                               ? "gray"
                               : "#299764",
                           fontSize: 12,
                         }}
                       >
                         {item.amountOwe < 0
-                          ? `You owe`
+                          ? settled
+                            ? `You Settled`
+                            : `You owe`
                           : item.amountOwe === 0
                           ? `no expenses`
+                          : settled
+                          ? `Already settled`
                           : `Owes you`}
                       </Text>
                       <Text
                         style={{
                           color:
                             item.amountOwe < 0
-                              ? "red"
+                              ? settled
+                                ? "black"
+                                : "red"
                               : item.amountOwe === 0
                               ? "gray"
+                              : settled
+                              ? "black"
                               : "#299764",
                           fontSize: 16,
                         }}
