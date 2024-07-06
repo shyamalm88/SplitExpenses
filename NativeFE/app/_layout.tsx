@@ -15,6 +15,7 @@ import { IconComponentProvider } from "@react-native-material/core";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { MD3DarkTheme, MD3LightTheme, Provider } from "react-native-paper";
 import { ContactProvider } from "./Context/LedgerContactContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -87,31 +88,35 @@ export default function RootLayout() {
   // };
 
   return (
-    <Provider theme={theme}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <ContactProvider>
-          <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                headerStyle: {
-                  backgroundColor: "#f4511e",
-                },
-                headerTintColor: "#fff",
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
-              }}
-              initialRouteName="(auth)"
-            >
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(individualPages)" />
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          </IconComponentProvider>
-        </ContactProvider>
-      </ThemeProvider>
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider theme={theme}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <ContactProvider>
+            <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  headerStyle: {
+                    backgroundColor: "#f4511e",
+                  },
+                  headerTintColor: "#fff",
+                  headerTitleStyle: {
+                    fontWeight: "bold",
+                  },
+                }}
+                initialRouteName="(auth)"
+              >
+                <Stack.Screen name="index" />
+                <Stack.Screen name="(individualPages)" />
+                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </IconComponentProvider>
+          </ContactProvider>
+        </ThemeProvider>
+      </Provider>
+    </GestureHandlerRootView>
   );
 }

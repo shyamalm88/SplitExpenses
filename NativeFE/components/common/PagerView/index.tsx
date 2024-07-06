@@ -17,14 +17,16 @@ export const PagerViewComponent = () => {
   const staticContent = {
     title: "Welcome to Split Expense!",
     imageSrc: require("@/assets/images/logo.png"),
-    subTitle: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut",
+    subTitle:
+      "SplitExpense simplify cost division among friends, family, or roommates by automating calculations and tracking who owes what.",
     description: "",
   };
   const data = [
     {
       title: "Split Expense",
-      imageSrc: require("@/assets/images/20943777.jpg"),
-      subTitle: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut",
+      imageSrc: require("@/assets/images/20943777.png"),
+      subTitle:
+        "Split Expense: Track, split, and settle group bills without the awkwardness.",
       description: "",
     },
     {
@@ -36,7 +38,7 @@ export const PagerViewComponent = () => {
     },
     {
       title: "Start Using SplitExpense",
-      imageSrc: require("@/assets/images/20943777.jpg"),
+      imageSrc: require("@/assets/images/asd.png"),
       subTitle: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut",
       description: "",
     },

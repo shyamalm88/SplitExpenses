@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    backgroundColor: "#fff",
     height: "auto",
     minHeight: 400,
   },

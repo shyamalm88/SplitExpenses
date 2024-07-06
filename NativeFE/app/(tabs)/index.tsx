@@ -28,6 +28,7 @@ import { theme } from "@/core/theme";
 import { ContactContext } from "../Context/LedgerContactContext";
 import Button from "@/components/common/Button";
 import axios from "axios";
+import Category from "@/components/Category";
 
 export default function DashboardScreen() {
   const { allContactData, setLedgerData } = React.useContext(ContactContext);
@@ -257,7 +258,11 @@ export default function DashboardScreen() {
               </View>
               {contacts && contacts.length && (
                 <View style={{ marginTop: 10 }}>
-                  <Divider style={{ marginVertical: 20 }} leadingInset={16} />
+                  <Divider
+                    style={{ marginVertical: 20 }}
+                    leadingInset={16}
+                    trailingInset={16}
+                  />
                   {isOpen && (
                     <View style={{ marginBottom: 20 }}>
                       <VStack spacing={10}>

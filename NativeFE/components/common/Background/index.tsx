@@ -30,7 +30,11 @@ const Background = ({
       }}
     >
       <ImageBackground
-        source={image ? image : require("@/assets/images/background_dot.png")}
+        source={
+          backgroundImage
+            ? image
+            : require("@/assets/images/background_dot.png")
+        }
         resizeMode={mode ? mode : "repeat"}
         style={styles.background}
       >

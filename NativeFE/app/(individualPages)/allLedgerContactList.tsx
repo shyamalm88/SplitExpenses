@@ -5,7 +5,6 @@ import { ContactContext } from "../Context/LedgerContactContext";
 import ContactListItemView from "@/components/common/ContactListItemView/ContactListItemView";
 import BackButton from "@/components/common/BackButton";
 import { router } from "expo-router";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BarChart, PieChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
@@ -46,30 +45,28 @@ export default function AllLedgerContactList() {
   ];
 
   return (
-    <GestureHandlerRootView>
-      <Background>
-        <SafeAreaView />
-        <BackButton goBack={() => router.back()} />
-        <View style={{ borderWidth: 1, borderRadius: 10, borderColor: "#ccc" }}>
-          <PieChart
-            data={data}
-            width={Dimensions.get("screen").width - 100}
-            height={170}
-            accessor={"population"}
-            backgroundColor={"white"}
-            chartConfig={chartConfig}
-            paddingLeft={"0"}
-            // center={[100, 0]}
-            style={{
-              marginVertical: 8,
-              borderRadius: 10,
-            }}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <ContactListItemView data={ledgerContactData} />
-        </View>
-      </Background>
-    </GestureHandlerRootView>
+    <Background>
+      <SafeAreaView />
+      <BackButton goBack={() => router.back()} />
+      <View style={{ borderWidth: 1, borderRadius: 10, borderColor: "#ccc" }}>
+        <PieChart
+          data={data}
+          width={Dimensions.get("screen").width - 100}
+          height={170}
+          accessor={"population"}
+          backgroundColor={"white"}
+          chartConfig={chartConfig}
+          paddingLeft={"0"}
+          // center={[100, 0]}
+          style={{
+            marginVertical: 8,
+            borderRadius: 10,
+          }}
+        />
+      </View>
+      <View style={{ flex: 1 }}>
+        <ContactListItemView data={ledgerContactData} />
+      </View>
+    </Background>
   );
 }

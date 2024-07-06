@@ -29,7 +29,7 @@ const ContactListItemView = ({ data, limit, settled }: any) => {
               <Pressable
                 style={{ height: 80 }}
                 onPress={() =>
-                  router.push("/(individualPages)/individualProfileView")
+                  router.push(`/(individualPages)/profileView/${item.id}`)
                 }
                 key={item.id}
               >
