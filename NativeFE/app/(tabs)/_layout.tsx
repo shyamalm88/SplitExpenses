@@ -7,7 +7,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import GroupsScreen from "./groups";
 import ActivityScreen from "./activity";
 import AccountScreen from "./account";
-import DashboardScreen from ".";
+import DashboardScreen from "./home";
+import { Stack } from "expo-router";
 
 const Tab = createBottomTabNavigator();
 
@@ -71,12 +72,13 @@ export default function TabLayout() {
         name="Dashboard"
         component={DashboardScreen}
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: "Dashboard",
           tabBarIcon: ({ color, size }) => {
             return <Icon name="home" size={size} color={color} />;
           },
         }}
       />
+
       <Tab.Screen
         name="Groups"
         component={GroupsScreen}

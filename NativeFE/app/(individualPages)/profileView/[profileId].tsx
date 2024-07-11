@@ -27,6 +27,7 @@ import BottomSheet, {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import AddExpenseComponent from "@/components/common/AddExpense";
 const exampleImageUri = Image.resolveAssetSource(image).uri;
 
 function IndividualProfileView() {
@@ -53,7 +54,7 @@ function IndividualProfileView() {
 
   React.useEffect(() => {
     (async () => {
-      const d = axios.get(`http://localhost:3000/profile/${profileId}`);
+      const d = axios.get(`http://192.168.1.2:3000/profile/${profileId}`);
       const resp = await d;
       setProfileData(resp.data);
     })().catch((err) => {
@@ -187,7 +188,6 @@ function IndividualProfileView() {
                 <List.Section>
                   <List.Subheader>August 2024</List.Subheader>
                   {profileData?.ledgerItems.map((item: any) => {
-                    const dateString = item?.eventDate;
                     return (
                       <List.Item
                         key={item.id}
@@ -201,13 +201,21 @@ function IndividualProfileView() {
                             <VStack center style={{ width: 40 }}>
                               <Text>
                                 {format(
-                                  parse(dateString, "MM/dd/yyyy", new Date()),
+                                  parse(
+                                    item?.eventDate,
+                                    "MM/dd/yyyy",
+                                    new Date()
+                                  ),
                                   "MMM"
                                 )}
                               </Text>
                               <Text>
                                 {format(
-                                  parse(dateString, "MM/dd/yyyy", new Date()),
+                                  parse(
+                                    item?.eventDate,
+                                    "MM/dd/yyyy",
+                                    new Date()
+                                  ),
                                   "dd"
                                 )}
                               </Text>
@@ -282,6 +290,7 @@ function IndividualProfileView() {
           >
             Add Expenses
           </Text>
+          <AddExpenseComponent />
         </BottomSheetView>
       </BottomSheet>
     </>

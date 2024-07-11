@@ -1,72 +1,155 @@
 import Background from "@/components/common/Background";
-import React, { Component } from "react";
+import React from "react";
 import { Text, View } from "react-native";
 import { ContactContext } from "../Context/LedgerContactContext";
 import ContactListItemView from "@/components/common/ContactListItemView/ContactListItemView";
 import BackButton from "@/components/common/BackButton";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BarChart, PieChart } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
-
-const chartConfig = {
-  backgroundGradientFrom: "#1E2923",
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#08130D",
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-  strokeWidth: 0, // optional, default 3
-  useShadowColorFromDataset: false, // optional
-};
+import { PieChart } from "react-native-gifted-charts";
+import { theme } from "@/core/theme";
 
 export default function AllLedgerContactList() {
   const { ledgerContactData, setLedgerData } = React.useContext(ContactContext);
 
-  const meOwe = ledgerContactData
+  const oweMe = ledgerContactData
     .filter((item: any) => item.amountOwe < 0)
     .reduce((acc: number, curr: any) => Math.abs(curr.amountOwe - acc), 0);
-  const oweMe = ledgerContactData
+  const meOwe = ledgerContactData
     .filter((item: any) => item.amountOwe >= 0)
     .reduce((acc: number, curr: any) => Math.abs(curr.amountOwe + acc), 0);
 
+  const renderDot = (color: string) => {
+    return (
+      <View
+        style={{
+          height: 10,
+          width: 10,
+          borderRadius: 5,
+          backgroundColor: color,
+          marginRight: 10,
+        }}
+      />
+    );
+  };
+  const renderLegendComponent = () => {
+    return (
+      <>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginBottom: 10,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              width: 120,
+              marginRight: 20,
+            }}
+          >
+            {renderDot("#006DFF")}
+            <Text style={{ color: "#006DFF" }}>Excellent: 47%</Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", width: 120 }}
+          >
+            {renderDot("#8F80F3")}
+            <Text style={{ color: "#8F80F3" }}>Okay: 16%</Text>
+          </View>
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              width: 120,
+              marginRight: 20,
+            }}
+          >
+            {renderDot("#3BE9DE")}
+            <Text style={{ color: "#3BE9DE" }}>Good: 40%</Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", width: 120 }}
+          >
+            {renderDot("#FF7F97")}
+            <Text style={{ color: "#FF7F97" }}>Poor: 3%</Text>
+          </View>
+        </View>
+      </>
+    );
+  };
+
   const data = [
     {
-      name: "I Owe Others",
-      population: meOwe,
-      color: "#FF5722",
-      legendFontColor: "#7F7F7F",
+      value: meOwe,
+      color: "green",
+      text: "" + Math.round((meOwe / (meOwe + oweMe)) * 100) + "%",
+      shiftTextY: 10,
+      textBackgroundColor: "tomato",
+      textColor: "#fff",
+      // shiftX: 28,
+      // shiftY: -18,
     },
     {
-      name: "Others Owe Me",
-      population: oweMe,
-      color: "#299764",
-      legendFontColor: "#7F7F7F",
+      value: oweMe,
+      color: "tomato",
+      text: "" + Math.round((oweMe / (meOwe + oweMe)) * 100) + "%",
+      shiftTextY: 10,
+      textBackgroundColor: "green",
+      textColor: "#fff",
     },
   ];
 
   return (
     <Background>
-      <SafeAreaView />
-      <BackButton goBack={() => router.back()} />
-      <View style={{ borderWidth: 1, borderRadius: 10, borderColor: "#ccc" }}>
-        <PieChart
-          data={data}
-          width={Dimensions.get("screen").width - 100}
-          height={170}
-          accessor={"population"}
-          backgroundColor={"white"}
-          chartConfig={chartConfig}
-          paddingLeft={"0"}
-          // center={[100, 0]}
+      <SafeAreaView style={{ flex: 1 }}>
+        <BackButton goBack={() => router.back()} absolute={false} />
+        <View
           style={{
-            marginVertical: 8,
             borderRadius: 10,
+            borderColor: "#ccc",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-        />
-      </View>
-      <View style={{ flex: 1 }}>
-        <ContactListItemView data={ledgerContactData} />
-      </View>
+        >
+          <PieChart
+            data={data}
+            donut
+            showGradient
+            sectionAutoFocus
+            radius={90}
+            innerRadius={60}
+            innerCircleColor={theme.colors.secondary}
+            innerCircleBorderColor={"lightgray"}
+            innerCircleBorderWidth={4}
+            focusOnPress
+            centerLabelComponent={() => {
+              return (
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Text
+                    style={{ fontSize: 22, color: "white", fontWeight: "bold" }}
+                  >
+                    {meOwe > oweMe ? meOwe : oweMe}
+                  </Text>
+                  <Text style={{ fontSize: 14, color: "white" }}>
+                    {meOwe > oweMe ? "I Owe" : "Others Owe Me"}
+                  </Text>
+                </View>
+              );
+            }}
+          />
+          {/* {renderLegendComponent()} */}
+        </View>
+        <View style={{ flex: 1 }}>
+          <ContactListItemView data={ledgerContactData} />
+        </View>
+      </SafeAreaView>
     </Background>
   );
 }

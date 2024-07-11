@@ -30,7 +30,7 @@ const LoginScreen = () => {
     //   return;
     // }
 
-    router.navigate("/(tabs)/");
+    router.navigate("/(tabs)/home");
   };
 
   return (

@@ -14,7 +14,7 @@ export default function OtherPagesLayout() {
         },
       }}
     >
-      <Stack.Screen name="allLedgerContactList" />
+      {/* <Stack.Screen name="allLedgerContactList" /> */}
     </Stack>
   );
 }
