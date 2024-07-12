@@ -59,6 +59,16 @@
       "settledDate": "",
       "number": "+919071000082",
       "name": "Bengalore Car Delivery"
+    },
+    {
+      "id": 1720733926385,
+      "contactId": "410FE041-5C4E-48DA-B4DE-04C15EA3DBAC",
+      "amountOwe": 0,
+      "currencySymbol": "INR",
+      "settled": null,
+      "settledDate": "",
+      "number": "888-555-5512",
+      "name": "John Appleseed"
     }
   ],
   "profile": [
@@ -155,6 +165,110 @@
           "settledDate": "2/5/2024",
           "splitBy": "percentage",
           "groupId": "6688497dfc13ae235c2345d8"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": 321,
+      "name": "Goa Trip 2024",
+      "group_type": "trip",
+      "updated_at": "2019-08-24T14:15:22Z",
+      "simplify_by_default": true,
+      "members": [
+        {
+          "id": 1,
+          "first_name": "Kankana",
+          "last_name": "Dutta",
+          "email": "ada@example.com",
+          "registration_status": "confirmed",
+          "balance": [
+            {
+              "currency_code": "INR",
+              "amount": "-5.02"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "first_name": "Paroj",
+          "last_name": "Roy",
+          "email": "ada@example.com",
+          "registration_status": "confirmed",
+          "balance": [
+            {
+              "currency_code": "INR",
+              "amount": "-15.02"
+            }
+          ]
+        }
+      ],
+      "original_debts": [
+        {
+          "from": 18523,
+          "to": 90261,
+          "amount": "414.5",
+          "currency_code": "USD"
+        }
+      ],
+      "simplified_debts": [
+        {
+          "from": 18523,
+          "to": 90261,
+          "amount": "414.5",
+          "currency_code": "USD"
+        }
+      ]
+    },
+    {
+      "id": 322,
+      "name": "Ladakh Trip 2019 🚌",
+      "group_type": "trip",
+      "updated_at": "2019-08-24T14:15:22Z",
+      "simplify_by_default": true,
+      "members": [
+        {
+          "id": 1,
+          "first_name": "Kankana",
+          "last_name": "Dutta",
+          "email": "ada@example.com",
+          "registration_status": "confirmed",
+          "balance": [
+            {
+              "currency_code": "INR",
+              "amount": "-5.02"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "first_name": "Paroj",
+          "last_name": "Roy",
+          "email": "ada@example.com",
+          "registration_status": "confirmed",
+          "balance": [
+            {
+              "currency_code": "INR",
+              "amount": "-15.02"
+            }
+          ]
+        }
+      ],
+      "original_debts": [
+        {
+          "from": 18523,
+          "to": 90261,
+          "amount": "414.5",
+          "currency_code": "USD"
+        }
+      ],
+      "simplified_debts": [
+        {
+          "from": 18523,
+          "to": 90261,
+          "amount": "414.5",
+          "currency_code": "USD"
         }
       ]
     }

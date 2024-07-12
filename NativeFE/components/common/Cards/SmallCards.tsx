@@ -89,7 +89,20 @@ const SmallCards = ({
             </View>
           </LinearGradient>
           {(variant === "default" || variant === "") && (
-            <Text style={{ color: textColor, ...styles.title }}>{title}</Text>
+            <Text
+              style={{
+                color: textColor,
+                ...styles.title,
+                maxWidth: 100,
+                textAlign: "center",
+              }}
+              ellipsizeMode="tail"
+              lineBreakStrategyIOS="hangul-word"
+              textBreakStrategy="highQuality"
+              numberOfLines={2}
+            >
+              {title}
+            </Text>
           )}
           {(variant === "default" || variant === "") && <Text>{subTitle}</Text>}
         </VStack>
@@ -104,7 +117,8 @@ const styles = StyleSheet.create({
   cardContainer: {
     justifyContent: "center",
     alignItems: "center",
-    margin: 5,
+    marginHorizontal: 15,
+    marginVertical: 5,
   },
   cardIconWrapper: {
     padding: 10,

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, ScrollView } from "react-native";
+import { StyleSheet, View, Pressable, ScrollView, Image } from "react-native";
 
 import * as Contacts from "expo-contacts";
 import React from "react";
@@ -29,6 +29,10 @@ import { ContactContext } from "../../Context/LedgerContactContext";
 import Button from "@/components/common/Button";
 import axios from "axios";
 import Category from "@/components/Category";
+import { getStatusBarHeight } from "react-native-status-bar-height";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import image from "@/assets/images/gm.jpg";
+const exampleImageUri = Image.resolveAssetSource(image).uri;
 
 export default function DashboardScreen() {
   const { allContactData, setLedgerData } = React.useContext(ContactContext);
@@ -152,37 +156,53 @@ export default function DashboardScreen() {
 
   return (
     <>
-      <Background>
-        <SafeAreaView style={{ height: "auto", flex: 1 }}>
-          <View
-            style={[
-              {
-                flexDirection: "column",
-                flex: 1,
-              },
-            ]}
-          >
-            <View>
-              <Box style={{ height: 60 }}>
-                <VStack>
-                  <HStack items="center" justify="between">
-                    <BackButton
-                      absolute={false}
-                      goBack={() => router.navigate("/(tabs)/home")}
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: "#D0D0D0", dark: "red" }}
+        style={{
+          height: 180,
+          justifyContent: "center",
+        }}
+        headerStyle={{
+          height: 180,
+          justifyContent: "center",
+        }}
+        headerImage={
+          <Background mode="cover" backgroundImage={exampleImageUri}>
+            <Box style={{ height: 60 }}>
+              <VStack>
+                <HStack items="center" justify="between">
+                  <BackButton
+                    absolute={false}
+                    goBack={() => router.navigate("/(tabs)/home")}
+                  />
+                  <HStack items="start">
+                    <IconButton
+                      icon={(props) => <Icon name="magnify" {...props} />}
                     />
-                    <HStack items="start">
-                      <IconButton
-                        icon={(props) => <Icon name="magnify" {...props} />}
-                      />
-                      <IconButton
-                        icon={(props) => (
-                          <Icon name="dots-vertical" {...props} />
-                        )}
-                      />
-                    </HStack>
+                    <IconButton
+                      icon={(props) => <Icon name="dots-vertical" {...props} />}
+                    />
                   </HStack>
-                </VStack>
-              </Box>
+                </HStack>
+              </VStack>
+            </Box>
+          </Background>
+        }
+      >
+        <ScrollView
+          contentContainerStyle={styles.contentContainerScroll}
+          showsVerticalScrollIndicator={false}
+        >
+          <Background>
+            {/* <SafeAreaView style={{ height: "auto", flex: 1 }}> */}
+            <View
+              style={[
+                {
+                  flexDirection: "column",
+                  flex: 1,
+                },
+              ]}
+            >
               <Box style={{ height: 60 }}>
                 <HStack justify="between" items="center">
                   {(!filterCriteria || filterCriteria === "oweMe") && (
@@ -224,118 +244,115 @@ export default function DashboardScreen() {
                   />
                 </HStack>
               </Box>
-              <ScrollView>
-                <Box style={{ height: 35 }}>
-                  {contacts?.length && (
-                    <Link
-                      href="/(individualPages)/allLedgerContactList"
-                      push
-                      style={{
-                        alignSelf: "flex-end",
-                        color: theme.colors.primary,
-                        borderWidth: 1,
-                        borderColor: theme.colors.primary,
-                        padding: 5,
-                        marginBottom: 2,
-                      }}
-                    >
-                      <Text>View All</Text>
-                      <Icon name="arrow-right" />
-                    </Link>
-                  )}
-                </Box>
 
-                <View>
-                  <ListItemView data={contacts} limit={5} />
-                </View>
-                {contacts && contacts.length && (
-                  <View style={{ marginTop: 10 }}>
-                    <Divider
-                      style={{ marginVertical: 20 }}
-                      leadingInset={16}
-                      trailingInset={16}
-                    />
-                    {isOpen && (
-                      <View style={{ marginBottom: 20 }}>
-                        <VStack spacing={10}>
-                          <HStack spacing={4} justify="center">
-                            <Text
-                              style={{
-                                justifyContent: "center",
-                                alignSelf: "center",
-                                color: theme.colors.secondary,
-                              }}
-                              onPress={() => setOpen(false)}
-                            >
-                              Previously settled up friends
-                            </Text>
-                            <Icon
-                              name={"chevron-up"}
-                              color={theme.colors.primary}
-                              size={20}
-                            />
-                            <Text
-                              style={{
-                                justifyContent: "center",
-                                alignSelf: "center",
-                                color: theme.colors.primary,
-                              }}
-                              onPress={() => setOpen(false)}
-                            >
-                              Re-Hide
-                            </Text>
-                          </HStack>
-                          <ListItemView data={settledContacts} settled />
-                        </VStack>
-                      </View>
-                    )}
-                    {!isOpen && (
-                      <VStack spacing={2}>
-                        <Text
-                          style={{
-                            justifyContent: "center",
-                            alignSelf: "center",
-                            color: theme.colors.secondary,
-                          }}
-                        >
-                          Hiding Already Settled Up Friends
-                        </Text>
-                        <Button mode="contained" onPress={() => setOpen(true)}>
-                          <HStack
-                            spacing={6}
-                            items="center"
-                            justify="center"
-                            content="center"
-                            self="center"
-                          >
-                            <Icon
-                              name={"chevron-down"}
-                              color="white"
-                              size={24}
-                            />
-                            <Text
-                              variant="body2"
-                              style={{ fontSize: 18, color: "white" }}
-                            >
-                              See All Recently Settled Contacts
-                            </Text>
-                          </HStack>
-                        </Button>
-                      </VStack>
-                    )}
-                  </View>
+              <Box style={{ height: 35 }}>
+                {contacts?.length && (
+                  <Link
+                    href="/(individualPages)/allLedgerContactList"
+                    push
+                    style={{
+                      alignSelf: "flex-end",
+                      color: theme.colors.primary,
+                      borderWidth: 1,
+                      borderColor: theme.colors.primary,
+                      padding: 5,
+                      marginBottom: 2,
+                    }}
+                  >
+                    <Text color={theme.colors.primary}>View All</Text>
+                    <Icon name="arrow-right" />
+                  </Link>
                 )}
-              </ScrollView>
+              </Box>
+
+              <View>
+                <ListItemView data={contacts} limit={10} />
+              </View>
+              {contacts && contacts.length && (
+                <View style={{ marginTop: 10 }}>
+                  <Divider
+                    style={{ marginVertical: 20 }}
+                    leadingInset={16}
+                    trailingInset={16}
+                  />
+                  {isOpen && (
+                    <View style={{ marginBottom: 20 }}>
+                      <VStack spacing={10}>
+                        <HStack spacing={4} justify="center">
+                          <Text
+                            style={{
+                              justifyContent: "center",
+                              alignSelf: "center",
+                              color: theme.colors.secondary,
+                            }}
+                            onPress={() => setOpen(false)}
+                          >
+                            Previously settled up friends
+                          </Text>
+                          <Icon
+                            name={"chevron-up"}
+                            color={theme.colors.primary}
+                            size={20}
+                          />
+                          <Text
+                            style={{
+                              justifyContent: "center",
+                              alignSelf: "center",
+                              color: theme.colors.primary,
+                            }}
+                            onPress={() => setOpen(false)}
+                          >
+                            Re-Hide
+                          </Text>
+                        </HStack>
+                        <ListItemView data={settledContacts} settled />
+                      </VStack>
+                    </View>
+                  )}
+                  {!isOpen && (
+                    <VStack spacing={2}>
+                      <Text
+                        style={{
+                          justifyContent: "center",
+                          alignSelf: "center",
+                          color: theme.colors.secondary,
+                        }}
+                      >
+                        Hiding Already Settled Up Friends
+                      </Text>
+                      <Button mode="contained" onPress={() => setOpen(true)}>
+                        <HStack
+                          spacing={6}
+                          items="center"
+                          justify="center"
+                          content="center"
+                          self="center"
+                        >
+                          <Icon name={"chevron-down"} color="white" size={24} />
+                          <Text
+                            variant="body2"
+                            style={{ fontSize: 18, color: "white" }}
+                          >
+                            See All Recently Settled Contacts
+                          </Text>
+                        </HStack>
+                      </Button>
+                    </VStack>
+                  )}
+                </View>
+              )}
             </View>
-          </View>
-          <FAB
-            icon="plus"
-            style={styles.fab}
-            onPress={() => router.push("/(individualPages)/addContact")}
-            color={"white"}
-          />
-        </SafeAreaView>
-      </Background>
+
+            {/* </SafeAreaView> */}
+          </Background>
+        </ScrollView>
+        <FAB
+          icon="plus"
+          style={styles.fab}
+          onPress={() => router.push("/(individualPages)/addContact")}
+          color={"white"}
+        />
+      </ParallaxScrollView>
 
       <BottomSheet
         ref={bottomSheetModalRef}
@@ -393,6 +410,9 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: "grey",
   },
+  contentContainerScroll: {
+    paddingVertical: 20,
+  },
   contentContainer: {
     flex: 1,
     justifyContent: "center",
@@ -413,7 +433,7 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     marginBottom: 16,
-    right: -20,
+    right: 20,
     bottom: -5,
     backgroundColor: "tomato",
     borderRadius: 50,
