@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from "react";
-import { Dimensions, StyleSheet, useColorScheme, View } from "react-native";
+import { Dimensions, StyleSheet, useColorScheme } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedRef,

@@ -1,26 +1,13 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, Image, Platform, View, Dimensions } from "react-native";
+import { StyleSheet, Image, View } from "react-native";
 
-import { Collapsible } from "@/components/Collapsible";
-import { ExternalLink } from "@/components/ExternalLink";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import Background from "@/components/common/Background";
 import BackButton from "@/components/common/BackButton";
 import { router } from "expo-router";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import {
-  HStack,
-  Icon,
-  IconButton,
-  Spacer,
-  Text,
-} from "@react-native-material/core";
-import ColorfulCard from "react-native-colorful-card";
+import { HStack, Icon, IconButton, Text } from "@react-native-material/core";
 import image from "@/assets/images/flat-lay-vibrant-paper-pyramids-with-copy-space.jpg";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView } from "react-native-gesture-handler";
 import SmallCards from "@/components/common/Cards";
 import React from "react";
 import axios from "axios";

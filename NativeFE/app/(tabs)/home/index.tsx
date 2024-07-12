@@ -27,10 +27,6 @@ import { FAB } from "react-native-paper";
 import { theme } from "@/core/theme";
 import { ContactContext } from "../../Context/LedgerContactContext";
 import Button from "@/components/common/Button";
-import axios from "axios";
-import Category from "@/components/Category";
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 import image from "@/assets/images/gm.jpg";
 const exampleImageUri = Image.resolveAssetSource(image).uri;
 
@@ -156,7 +152,7 @@ export default function DashboardScreen() {
 
   return (
     <>
-      <ParallaxScrollView
+      {/* <ParallaxScrollView
         headerBackgroundColor={{ light: "#D0D0D0", dark: "red" }}
         style={{
           height: 180,
@@ -188,63 +184,79 @@ export default function DashboardScreen() {
             </Box>
           </Background>
         }
-      >
-        <ScrollView
-          contentContainerStyle={styles.contentContainerScroll}
-          showsVerticalScrollIndicator={false}
-        >
-          <Background>
-            {/* <SafeAreaView style={{ height: "auto", flex: 1 }}> */}
-            <View
-              style={[
-                {
-                  flexDirection: "column",
-                  flex: 1,
-                },
-              ]}
-            >
-              <Box style={{ height: 60 }}>
-                <HStack justify="between" items="center">
-                  {(!filterCriteria || filterCriteria === "oweMe") && (
-                    <VStack spacing={5}>
-                      <HStack justify="start" spacing={10}>
-                        <Text variant="subtitle1">Overall, You Owe</Text>
-                        <Text
-                          variant="subtitle1"
-                          color="#FF5722"
-                          style={{ fontWeight: "bold" }}
-                        >
-                          ₹ {meOwe}
-                        </Text>
-                      </HStack>
-                    </VStack>
-                  )}
-                  {filterCriteria === "iOwe" && (
-                    <VStack spacing={5}>
-                      <HStack justify="start" spacing={10}>
-                        <Text variant="subtitle1">Overall, Others Owe You</Text>
-                        <Text
-                          variant="subtitle1"
-                          color="#299764"
-                          style={{ fontWeight: "bold" }}
-                        >
-                          ₹ {othersOweMe}
-                        </Text>
-                      </HStack>
-                    </VStack>
-                  )}
+      > */}
+
+      <Background>
+        <SafeAreaView style={{ height: "auto", flex: 1 }}>
+          <Box style={{ height: 60 }}>
+            <VStack>
+              <HStack items="center" justify="between">
+                <BackButton
+                  absolute={false}
+                  goBack={() => router.navigate("/(tabs)/home")}
+                />
+                <HStack items="start">
                   <IconButton
-                    onPress={handlePresentModalPress}
-                    color={
-                      filterCriteria === "iOwe" && contacts?.length
-                        ? "#299764"
-                        : "#FF5722"
-                    }
-                    icon={(props) => <Icon name="tune" {...props} />}
+                    icon={(props) => <Icon name="magnify" {...props} />}
+                  />
+                  <IconButton
+                    icon={(props) => <Icon name="dots-vertical" {...props} />}
                   />
                 </HStack>
-              </Box>
+              </HStack>
+            </VStack>
+          </Box>
 
+          <View
+            style={[
+              {
+                flexDirection: "column",
+                flex: 1,
+              },
+            ]}
+          >
+            <Box style={{ height: 60 }}>
+              <HStack justify="between" items="center">
+                {(!filterCriteria || filterCriteria === "oweMe") && (
+                  <VStack spacing={5}>
+                    <HStack justify="start" spacing={10}>
+                      <Text variant="subtitle1">Overall, You Owe</Text>
+                      <Text
+                        variant="subtitle1"
+                        color="#FF5722"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        ₹ {meOwe}
+                      </Text>
+                    </HStack>
+                  </VStack>
+                )}
+                {filterCriteria === "iOwe" && (
+                  <VStack spacing={5}>
+                    <HStack justify="start" spacing={10}>
+                      <Text variant="subtitle1">Overall, Others Owe You</Text>
+                      <Text
+                        variant="subtitle1"
+                        color="#299764"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        ₹ {othersOweMe}
+                      </Text>
+                    </HStack>
+                  </VStack>
+                )}
+                <IconButton
+                  onPress={handlePresentModalPress}
+                  color={
+                    filterCriteria === "iOwe" && contacts?.length
+                      ? "#299764"
+                      : "#FF5722"
+                  }
+                  icon={(props) => <Icon name="tune" {...props} />}
+                />
+              </HStack>
+            </Box>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <Box style={{ height: 35 }}>
                 {contacts?.length && (
                   <Link
@@ -341,18 +353,17 @@ export default function DashboardScreen() {
                   )}
                 </View>
               )}
-            </View>
-
-            {/* </SafeAreaView> */}
-          </Background>
-        </ScrollView>
-        <FAB
-          icon="plus"
-          style={styles.fab}
-          onPress={() => router.push("/(individualPages)/addContact")}
-          color={"white"}
-        />
-      </ParallaxScrollView>
+            </ScrollView>
+          </View>
+        </SafeAreaView>
+      </Background>
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => router.push("/(individualPages)/addContact")}
+        color={"white"}
+      />
+      {/* </ParallaxScrollView> */}
 
       <BottomSheet
         ref={bottomSheetModalRef}
