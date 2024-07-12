@@ -264,15 +264,16 @@ export default function DashboardScreen() {
                     push
                     style={{
                       alignSelf: "flex-end",
-                      color: theme.colors.primary,
+                      color: "#fff",
                       borderWidth: 1,
                       borderColor: theme.colors.primary,
                       padding: 5,
                       marginBottom: 2,
+                      borderRadius: 5,
                     }}
                   >
                     <Text color={theme.colors.primary}>View All</Text>
-                    <Icon name="arrow-right" />
+                    <Icon name="arrow-right" color={theme.colors.primary} />
                   </Link>
                 )}
               </Box>

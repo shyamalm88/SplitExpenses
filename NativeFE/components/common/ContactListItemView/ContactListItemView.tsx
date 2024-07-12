@@ -148,9 +148,9 @@ const styles = StyleSheet.create({
   mainCardView: {
     height: 70,
     // alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "#ffffff6e",
     borderRadius: 10,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#d7d7d7",
     flexDirection: "row",
     justifyContent: "space-between",
